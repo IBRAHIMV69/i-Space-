@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Search & URL Lock with Countdown</title>
+    <title>i Space</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -55,8 +55,8 @@
             color: #fff;
         }
         .search-bar input, .promo-code input {
-            width: 74%;
-            padding: 9px;
+            width: 65%;
+            padding: 8px;
             border-radius: 8px;
             border: none;
             background: #fff;
@@ -65,7 +65,7 @@
             box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
         }
         .search-bar button, .promo-code button {
-            padding: 5px 5px;
+            padding: 2px 5px;
             border-radius: 8px;
             border: none;
             background: linear-gradient(135deg, #1e90ff, #0066ff);
@@ -98,53 +98,53 @@
 </head>
 <body>
     <div class="balance">
-        <p>Balance: 💰 <span id="balance">1.00</span></p>
+        <p>Balance: ₦<span id="balance">200.00</span></p>
     </div>
     
     <iframe id="videoIframe" src="" allowfullscreen></iframe>
     
     <div class="search-bar">
         <input type="text" id="searchInput" placeholder="Enter video title...">
-        <button onclick="searchVideo()">Search</button>
+        <button onclick="searchVideo()">Pay ₦200</button>
     </div>
     
     <div class="promo-code">
         <input type="text" id="promoCodeInput" placeholder="Enter recharge code...">
-        <button onclick="applyPromoCode()">Submit</button>
+        <button onclick="applyPromoCode()">💳Submit</button>
     </div>    </a>
     </div>
     
     <!-- Short Description -->
-    <p class="description">Get $2 rewards for visiting sites of advertisers. Or go to buy a recharge code...</p>
+    <p class="description">Get ₦20 rewards for visiting sites of advertisers. Or go to buy a recharge code...</p>
     
     <div class="url-buttons">
         <a href="https://zireemilsoude.net/4/7908761" target="_blank" id="url1" onclick="markUrlVisited(0)">
-            <span>Earn $2</span>
+            <span>Get ₦20</span>
         </a>
         <a href="https://www.profitablecpmrate.com/yj516zqeuh?key=67623d7811021ba7d072604ff121c586" target="_blank" id="url2" onclick="markUrlVisited(1)">
-            <span>Earn $2</span>
+            <span>Get ₦20</span>
         </a>
         <a href="https://zireemilsoude.net/4/7908756" target="_blank" id="url3" onclick="markUrlVisited(2)">
-            <span>Earn $2</span>
+            <span>Get ₦20</span>
         </a>
         <a href="https://www.profitablecpmrate.com/vuq0mnejn?key=7241c685c3c694f609c9eebacbd85a50" target="_blank" id="url4" onclick="markUrlVisited(3)">
-            <span>Earn $2</span>
+            <span>Get ₦20</span>
         </a>
     </div>     
     
     <script>
         const videoList = [
-            { title: "Learn JavaScript", id: "upDLs1sn7g4" },
+            { title: "Sadauki", id: "S8XB_-GZ2hM" },
             { title: "HTML Tutorial", id: "UB1O30fR-EE" },
             { title: "CSS Basics", id: "yfoY53QXEnI" }
         ];
 
-        let balance = parseFloat(localStorage.getItem('balance')) || 1.00;
+        let balance = parseFloat(localStorage.getItem('balance')) || 200.00;
         const urlsVisited = JSON.parse(localStorage.getItem('urlsVisited')) || [null, null, null, null];
-        const promoCodes = { '112233': 50.00, '334400': 20.00, '556677': 10.00, '778811': 30.00 };
+        const promoCodes = { '1122ee': 500.00, '334400': 1000.00, '556677': 10000.00, '778811': 30.00 };
         let usedPromoCodes = JSON.parse(localStorage.getItem('usedPromoCodes')) || [];
 
-        document.getElementById('balance').textContent = balance.toFixed(2);
+        document.getElementById('balance').textContent = balance.toLocaleString('en-NG', { minimumFractionDigits: 2 });
 
         function loadVideo(videoId) {
             const iframe = document.getElementById('videoIframe');
@@ -152,23 +152,49 @@
         }
 
         function searchVideo() {
-            if (balance >= 2) {
-                const searchQuery = document.getElementById('searchInput').value.trim().toLowerCase();
-                const video = videoList.find(v => v.title.toLowerCase().includes(searchQuery));
+    const searchInput = document.getElementById('searchInput');
+    const searchQuery = searchInput.value.trim().toLowerCase();
 
-                if (video) {
-                    balance -= 2;
-                    localStorage.setItem('balance', balance.toFixed(2));
-                    document.getElementById('balance').textContent = balance.toFixed(2);
+    // Check if the search input is empty
+    if (!searchQuery) {
+        alert("Please enter a video title before searching.");
+        return; // Stop execution if no input is provided
+    }
 
-                    loadVideo(video.id);
-                } else {
-                    alert("No video found with the given title.");
-                }
-            } else {
-                alert("Insufficient balance. Please visit the Earn buttons to earn more balance. or go to buy recharge code");
-            }
+    if (balance >= 200) {
+        const video = videoList.find(v => v.title.toLowerCase().includes(searchQuery));
+
+        if (video) {
+            // Save the currently playing video in localStorage
+            const lastSearchedVideo = JSON.parse(localStorage.getItem('lastSearchedVideo')) || [];
+            lastSearchedVideo.unshift({ title: video.title, id: video.id }); // Add the new video to the beginning
+            localStorage.setItem('lastSearchedVideo', JSON.stringify(lastSearchedVideo.slice(0, 1))); // Keep only one video
+
+            // Deduct balance
+            balance -= 200;
+            localStorage.setItem('balance', balance.toFixed(2));
+            document.getElementById('balance').textContent = balance.toLocaleString('en-NG', { minimumFractionDigits: 2 });
+
+            loadVideo(video.id);
+        } else {
+            alert("No video found with the given title.");
         }
+    } else {
+        alert("Insufficient balance. Please visit the Earn buttons to earn more balance, or buy a recharge code.");
+    }
+
+    // Clear the search input field after searching
+    searchInput.value = '';
+}
+
+window.onload = function() {
+    const lastSearchedVideo = JSON.parse(localStorage.getItem('lastSearchedVideo'));
+    if (lastSearchedVideo && lastSearchedVideo.length > 0) {
+        const lastVideo = lastSearchedVideo[0];
+        loadVideo(lastVideo.id); // Automatically load the last searched video
+        aler(`Last searched video: ${lastVideo.title}`);
+    }
+};
 
         function markUrlVisited(index) {
             const now = Date.now();
@@ -176,7 +202,7 @@
             if (urlsVisited[index] === null || now - urlsVisited[index] >= 3600000) {
                 urlsVisited[index] = now;
                 localStorage.setItem('urlsVisited', JSON.stringify(urlsVisited));
-                addBalance(2.00);
+                addBalance(20.00);
                 lockButtons();
             } else {
                 alert("Please wait for the timer to finish.");
@@ -186,7 +212,7 @@
         function addBalance(amount) {
             balance += amount;
             localStorage.setItem('balance', balance.toFixed(2));
-            document.getElementById('balance').textContent = balance.toFixed(2);
+            document.getElementById('balance').textContent = balance.toLocaleString('en-NG', { minimumFractionDigits: 2 });
         }
 
         function lockButtons() {
@@ -198,7 +224,7 @@
 
                 if (urlsVisited[i] === null || timeElapsed >= 3600000) {
                     button.classList.add('active');
-                    button.querySelector('span').textContent = "Earn $2";
+                    button.querySelector('span').textContent = "Get ₦20";
                 } else {
                     button.classList.remove('active');
                     const timeRemaining = 3600000 - timeElapsed;
@@ -220,7 +246,7 @@
                 if (timeRemaining <= 0) {
                     clearInterval(interval);
                     button.classList.add('active');
-                    span.textContent = "Earn $2";
+                    span.textContent = "Get ₦20";
                 }
             }, 1000);
         }
@@ -248,7 +274,7 @@
 function addBalance(amount) {
     balance += amount;
     localStorage.setItem('balance', balance.toFixed(2));
-    document.getElementById('balance').textContent = balance.toFixed(2);
+    document.getElementById('balance').textContent = balance.toLocaleString('en-NG', { minimumFractionDigits: 2 });
 }
 
         // Initialize the buttons on page load
